@@ -50,6 +50,7 @@ type Matter struct {
 	VisitTime  time.Time `json:"visitTime" gorm:"type:timestamp not null;default:'2018-01-01 00:00:00'"`
 	Deleted    bool      `json:"deleted" gorm:"type:tinyint(1) not null;index:idx_matter_del;default:0"`
 	DeleteTime time.Time `json:"deleteTime" gorm:"type:timestamp not null;index:idx_matter_delt;default:'2018-01-01 00:00:00'"`
+	Note       string    `json:"note" gorm:"type:varchar(255)"`
 }
 
 // get matter's absolute path. the Path property is relative path in db.
@@ -61,7 +62,7 @@ func (this *Matter) MimeType() string {
 	return util.GetMimeType(util.GetExtension(this.Name))
 }
 
-//Create a root matter. It's convenient for copy and move
+// Create a root matter. It's convenient for copy and move
 func NewRootMatter(user *User) *Matter {
 	matter := &Matter{}
 	matter.Uuid = MATTER_ROOT
@@ -76,7 +77,7 @@ func NewRootMatter(user *User) *Matter {
 	return matter
 }
 
-//get user's space absolute path
+// get user's space absolute path
 func GetUserSpaceRootDir(username string) (rootDirPath string) {
 
 	rootDirPath = fmt.Sprintf("%s/%s", core.CONFIG.MatterPath(), username)
@@ -84,7 +85,7 @@ func GetUserSpaceRootDir(username string) (rootDirPath string) {
 	return rootDirPath
 }
 
-//get user's root absolute path
+// get user's root absolute path
 func GetUserMatterRootDir(username string) (rootDirPath string) {
 
 	rootDirPath = fmt.Sprintf("%s/%s/%s", core.CONFIG.MatterPath(), username, MATTER_ROOT)
@@ -92,7 +93,7 @@ func GetUserMatterRootDir(username string) (rootDirPath string) {
 	return rootDirPath
 }
 
-//get user's cache absolute path
+// get user's cache absolute path
 func GetUserCacheRootDir(username string) (rootDirPath string) {
 
 	rootDirPath = fmt.Sprintf("%s/%s/%s", core.CONFIG.MatterPath(), username, MATTER_CACHE)
@@ -100,7 +101,7 @@ func GetUserCacheRootDir(username string) (rootDirPath string) {
 	return rootDirPath
 }
 
-//get user's zip absolute path
+// get user's zip absolute path
 func GetUserZipRootDir(username string) (rootDirPath string) {
 
 	rootDirPath = fmt.Sprintf("%s/%s/%s", core.CONFIG.MatterPath(), username, MATTER_ZIP)
@@ -108,7 +109,7 @@ func GetUserZipRootDir(username string) (rootDirPath string) {
 	return rootDirPath
 }
 
-//check matter's name. If error, panic.
+// check matter's name. If error, panic.
 func CheckMatterName(request *http.Request, name string) string {
 
 	if name == "" {
@@ -127,7 +128,7 @@ func CheckMatterName(request *http.Request, name string) string {
 	return name
 }
 
-//fetch the props
+// fetch the props
 func (this *Matter) FetchPropMap() map[string]string {
 
 	m := make(map[string]string)
@@ -144,7 +145,7 @@ func (this *Matter) FetchPropMap() map[string]string {
 	return m
 }
 
-//fetch the props
+// fetch the props
 func (this *Matter) SetPropMap(propMap map[string]string) {
 
 	b, err := jsoniter.ConfigCompatibleWithStandardLibrary.Marshal(propMap)
