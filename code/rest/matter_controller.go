@@ -87,6 +87,9 @@ func (this *MatterController) RegisterRoutes() map[string]func(writer http.Respo
 	routeMap["/api/matter/detail"] = this.Wrap(this.Detail, USER_ROLE_USER)
 	routeMap["/api/matter/page"] = this.Wrap(this.Page, USER_ROLE_GUEST)
 
+	// 修改备注
+	routeMap["/api/matter/note"] = this.Wrap(this.EditNote, USER_ROLE_USER)
+
 	//mirror local files.
 	routeMap["/api/matter/mirror"] = this.Wrap(this.Mirror, USER_ROLE_USER)
 	routeMap["/api/matter/zip"] = this.Wrap(this.Zip, USER_ROLE_USER)
@@ -473,6 +476,22 @@ func (this *MatterController) Rename(writer http.ResponseWriter, request *http.R
 	}
 
 	this.matterService.AtomicRename(request, matter, name, false, user)
+
+	return this.Success(matter)
+}
+
+// 修改备注信息
+func (this *MatterController) EditNote(writer http.ResponseWriter, request *http.Request) *result.WebResult {
+	uuid := request.FormValue("uuid")
+	note := request.FormValue("note")
+
+	user := this.checkUser(request)
+
+	matter := this.matterDao.CheckByUuid(uuid)
+	if matter.UserUuid != user.Uuid {
+		panic(result.UNAUTHORIZED)
+	}
+	this.matterService.EditNote(request, matter, user, note)
 
 	return this.Success(matter)
 }

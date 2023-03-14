@@ -973,6 +973,24 @@ func (this *MatterService) AtomicRename(request *http.Request, matter *Matter, n
 	return
 }
 
+// 修改备注信息
+func (this *MatterService) EditNote(request *http.Request, matter *Matter, user *User, note string) {
+	this.logger.Info("Try to edit note srcPath = %s", matter.Path)
+	if user == nil {
+		panic(result.BadRequest("user cannot be nil"))
+	}
+
+	if matter.Deleted {
+		panic(result.BadRequest("matter has been deleted. Cannot edit note."))
+	}
+
+	this.userService.MatterLock(user.Uuid)
+	defer this.userService.MatterUnlock(user.Uuid)
+	matter.Note = note
+	this.matterDao.Save(matter)
+	return
+}
+
 // 将本地文件映射到蓝眼云盘中去。
 func (this *MatterService) AtomicMirror(request *http.Request, srcPath string, destPath string, overwrite bool, user *User) {
 

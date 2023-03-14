@@ -278,7 +278,7 @@ func (this *MatterDao) PlainPage(
 	}
 
 	if name != "" {
-		wp = wp.And(&builder.WherePair{Query: "name LIKE ?", Args: []interface{}{"%" + name + "%"}})
+		wp = wp.And(&builder.WherePair{Query: "name LIKE ? or note LIKE ?", Args: []interface{}{"%" + name + "%", "%" + name + "%"}})
 	}
 
 	if deleteTimeBefore != nil {
