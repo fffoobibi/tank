@@ -51,9 +51,12 @@ SET DIST_PATH=%DIST_DIR%\%FILE_NAME%
 ECHO DIST_PATH: %DIST_PATH%
 
 cd %PROJECT_DIR%
-
-ECHO go build -mod=readonly
-go build -mod=readonly
+set output=%COMPONENT_DIR%\tank
+SET CGO_ENABLED=0
+SET GOOS=linux
+SET GOARCH=amd64
+ECHO go build -mod=readonly -o tank
+go build -mod=readonly -o tank
 
 
 IF EXIST %COMPONENT_DIR% (
@@ -64,8 +67,8 @@ IF EXIST %COMPONENT_DIR% (
 )
 
 
-ECHO copy .\tank.exe %COMPONENT_DIR%
-copy .\tank.exe %COMPONENT_DIR%
+ECHO copy .\tank %COMPONENT_DIR%
+copy .\tank %COMPONENT_DIR%
 
 ECHO %BUILD_DIR%\conf %COMPONENT_DIR%\conf /E/H/I
 xcopy %BUILD_DIR%\conf %COMPONENT_DIR%\conf /E/H/I
